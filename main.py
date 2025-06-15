@@ -12,7 +12,7 @@ from typing import List
 from werkzeug.security import generate_password_hash, check_password_hash
 from forms import CreatePostForm, RegisterForm, LoginForm, CommentForm
 import os
-# Optional: add contact me email functionality (Day 60)
+# Optional: add contact me email functionality (Day 60) test
 # import smtplib
 
 # -----------------------------
