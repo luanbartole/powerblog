@@ -299,16 +299,19 @@ def contact():
         data = request.form  # Collect data submitted in the form
 
         # Send the form data via email using SMTP
-        with smtplib.SMTP("smtp.gmail.com", 587) as connection:
-            connection.starttls()  # Secure the connection
-            connection.login(BOT_EMAIL, BOT_EMAIL_PASSWORD)
-            connection.sendmail(
-                from_addr=BOT_EMAIL,
-                to_addrs=user_email,
-                msg=f"Subject: Blog Contact Form - {data['username']} \n\n"
-                    f"Message: {data['message']} \n\n"
-                    f"Email: {data['email']} Phone Number: {data['phone']}"
-            )
+        try:
+            with smtplib.SMTP("smtp.gmail.com", 587) as connection:
+                connection.starttls()
+                connection.login(BOT_EMAIL, BOT_EMAIL_PASSWORD)
+                connection.sendmail(
+                    from_addr=BOT_EMAIL,
+                    to_addrs=user_email,
+                    msg=f"Subject: Blog Contact Form - {data['name']} \n\n"
+                        f"Message: {data['message']} \n\n"
+                        f"Email: {data['email']} Phone Number: {data['phone']}"
+                )
+        except Exception as e:
+            return f"<h1>Error sending message: {e}</h1>", 500
 
         # Show a success message to the user
         return "<h1>Successfully sent your message</h1>"
