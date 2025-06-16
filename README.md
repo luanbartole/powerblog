@@ -2,8 +2,6 @@
 
 A simple blog app built with Flask. It supports user registration, login, blog post creation, and commenting. Only the admin can create and manage posts.
 
-🟢 Live site: [https://powerblog-lj3k.onrender.com](https://powerblog-lj3k.onrender.com)
-
 ---
 
 ## Features
