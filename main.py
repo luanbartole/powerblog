@@ -12,14 +12,17 @@ from typing import List
 from werkzeug.security import generate_password_hash, check_password_hash
 from forms import CreatePostForm, RegisterForm, LoginForm, CommentForm
 import os
-# Optional: add contact me email functionality (Day 60) test
-# import smtplib
+import smtplib
 
 # -----------------------------
 # App & Extension Initialization
 # -----------------------------
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get("FLASK_KEY")
+BOT_EMAIL = os.environ.get("PYTHON_EMAIL")
+BOT_EMAIL_PASSWORD = os.environ.get("PYTHON_EMAIL_PASSWORD")
+user_email = os.environ.get("USER_EMAIL")
+
 
 # Initialize CKEditor for rich text editing in posts
 ckeditor = CKEditor(app)
@@ -290,32 +293,28 @@ def about():
     return render_template("about.html")
 
 
-@app.route("/contact")
+@app.route("/contact.html", methods=["GET", "POST"])
 def contact():
+    if request.method == "POST":
+        data = request.form  # Collect data submitted in the form
+
+        # Send the form data via email using SMTP
+        with smtplib.SMTP("smtp.gmail.com", 587) as connection:
+            connection.starttls()  # Secure the connection
+            connection.login(BOT_EMAIL, BOT_EMAIL_PASSWORD)
+            connection.sendmail(
+                from_addr=BOT_EMAIL,
+                to_addrs=user_email,
+                msg=f"Subject: Blog Contact Form - {data['username']} \n\n"
+                    f"Message: {data['message']} \n\n"
+                    f"Email: {data['email']} Phone Number: {data['phone']}"
+            )
+
+        # Show a success message to the user
+        return "<h1>Successfully sent your message</h1>"
+
+    # Render the contact form template if it's a GET request
     return render_template("contact.html")
-
-# Optional: You can include the email sending code from Day 60:
-# DON'T put your email and password here directly! The code will be visible when you upload to Github.
-# Use environment variables instead (Day 35)
-
-# MAIL_ADDRESS = os.environ.get("EMAIL_KEY")
-# MAIL_APP_PW = os.environ.get("PASSWORD_KEY")
-
-# @app.route("/contact", methods=["GET", "POST"])
-# def contact():
-#     if request.method == "POST":
-#         data = request.form
-#         send_email(data["name"], data["email"], data["phone"], data["message"])
-#         return render_template("contact.html", msg_sent=True)
-#     return render_template("contact.html", msg_sent=False)
-#
-#
-# def send_email(name, email, phone, message):
-#     email_message = f"Subject:New Message\n\nName: {name}\nEmail: {email}\nPhone: {phone}\nMessage:{message}"
-#     with smtplib.SMTP("smtp.gmail.com") as connection:
-#         connection.starttls()
-#         connection.login(MAIL_ADDRESS, MAIL_APP_PW)
-#         connection.sendmail(MAIL_ADDRESS, MAIL_APP_PW, email_message)
 
 
 # -----------------------------
