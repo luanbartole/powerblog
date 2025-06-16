@@ -310,11 +310,9 @@ def contact():
                         f"Message: {data['message']} \n\n"
                         f"Email: {data['email']} Phone Number: {data['phone']}"
                 )
+                flash("Your message was sent successfully!", "success")
         except Exception as e:
-            return f"<h1>Error sending message: {e}</h1>", 500
-
-        # Show a success message to the user
-        return "<h1>Successfully sent your message</h1>"
+            flash(f"❌ Failed to send message: {e}", "error")
 
     # Render the contact form template if it's a GET request
     return render_template("contact.html")
